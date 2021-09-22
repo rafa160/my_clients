@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "636054433334",
+    "project_id": "my-clients-cda35",
+    "storage_bucket": "my-clients-cda35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636054433334:android:1e0c17543b051ca7003297",
+        "android_client_info": {
+          "package_name": "com.my_clients_by_anduril"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636054433334-0ia71hf615kdbmhf36nhs4oo5qanjtps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl7aJEMmhBhHAVxTlkukdw1J75TGavWyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636054433334-0ia71hf615kdbmhf36nhs4oo5qanjtps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
