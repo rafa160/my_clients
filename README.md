@@ -1,6 +1,6 @@
 # my_clients
 
-Using a Modular Archt.
+Using a Modular Archt and bloc pattern as state management.
 
 - Libs
   - Bloc_parttern
