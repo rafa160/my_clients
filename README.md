@@ -1,4 +1,25 @@
-# my_clients_by_anduril
+# my_clients
+
+Using a Modular Archt.
+
+- Libs
+  - Bloc_parttern
+  - Get
+  - url_laucher
+  - firebase
+  - flutter_form_builder
+  - dio
+ 
+runs flutter build apk to gets an test apk.
+
+it runs on androids and ios.
+ - tested andoid 10, 11.
+
+step by step
+- Create an account.
+- go to prospect screen and create an new  prospect client
+- pick the prospect and add the company code to him and add new date to visit.
+- now ur client will change status and become a new fresh client with schedule visits (u can open google maps through the app)
 
 ![tela info home 0](https://user-images.githubusercontent.com/37839608/134359851-2880a0df-239c-4fd9-9dc5-86cb9486967a.png)
 ![tela info 1](https://user-images.githubusercontent.com/37839608/134359856-ca54079a-4982-44da-8b3e-ac635deb15c1.png)
