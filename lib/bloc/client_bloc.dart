@@ -47,6 +47,7 @@ class ClientBloc extends BlocBase {
         "day": null,
         "month": null,
         "observations": null,
+        "budget": null,
         "next_visit": null,
         "company_key": null
       };

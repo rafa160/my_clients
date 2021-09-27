@@ -22,6 +22,7 @@ class ClientModel {
   String employeeId;
   ClientStatus status;
   String observations;
+  String budget;
   String companyKey;
   int day;
   int month;
@@ -43,7 +44,7 @@ class ClientModel {
       this.whatsApp,
       this.email,
       this.day,
-      this.month});
+      this.month, this.budget});
 
   ClientModel.fromDocument(DocumentSnapshot snapshot) {
     id = snapshot.id;
@@ -64,6 +65,7 @@ class ClientModel {
     employeeId = snapshot.get('employee_id');
     status = ClientStatus.values[snapshot.get('status') as int];
     observations = snapshot.get('observations');
+    budget = snapshot.get('budget') != null ? snapshot.get('budget') : null;
     companyKey = snapshot.get('company_key');
     email = snapshot.get('email');
     whatsApp = snapshot.get('whats_app');
