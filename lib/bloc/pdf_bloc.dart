@@ -37,10 +37,10 @@ class PdfBloc extends BlocBase {
     PdfFont headerFont = PdfTrueTypeFont(fontData, 30);
     PdfFont footerFont = PdfTrueTypeFont(fontData, 18);
 
-    final PdfGrid grid = _getGrid(contentFont, clientModel);
+    final PdfGrid grid = _getGrid(contentFont, clientModel, 5, 'Visita', 'Empresa', 'Responsável', 'Telefone',0, userModel);
     //Draw the header section by creating text element
     final PdfLayoutResult result =
-    _drawHeader(page, pageSize, grid, contentFont, headerFont, footerFont, clientModel);
+    _drawHeader(page, pageSize, grid, contentFont, headerFont, footerFont, clientModel, 'Info. Cliente');
     //Draw grid
     _drawGrid(page, grid, result, contentFont, clientModel);
     //Add invoice footer
@@ -60,22 +60,66 @@ class PdfBloc extends BlocBase {
     OpenFile.open('$path/Output.pdf');
   }
 
-  PdfGrid _getGrid(PdfFont contentFont, ClientModel clientModel) {
+  Future<void> createBudget({ClientModel clientModel, UserModel userModel}) async {
+    PdfDocument document;
+    document = PdfDocument(conformanceLevel: PdfConformanceLevel.a3b);
+    String text =
+        'Create my Bugdet and send it';
+    document.attachments.add(PdfAttachment(
+        'Budget.txt', utf8.encode(text),
+        description: 'Create my Bugdet', mimeType: 'application/txt'));
+    final PdfPage page = document.pages.add();
+    final Size pageSize = page.getClientSize();
+    page.graphics.drawRectangle(
+        bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
+        pen: PdfPen(PdfColor(142, 170, 219, 255)));
+    List<int> fontData = await _readData('Roboto-Regular.ttf');
+    PdfFont contentFont = PdfTrueTypeFont(fontData, 9);
+    PdfFont headerFont = PdfTrueTypeFont(fontData, 30);
+    PdfFont footerFont = PdfTrueTypeFont(fontData, 18);
+
+    final PdfGrid grid = _getGrid(contentFont, clientModel, 5, 'Data de Solicitação', 'Orçamento', 'Responsável', 'E-mail', 1, userModel);
+    //Draw the header section by creating text element
+    final PdfLayoutResult result =
+    _drawHeader(page, pageSize, grid, contentFont, headerFont, footerFont, clientModel, 'Orçamento');
+    //Add invoice footer
+    _drawGrid(page, grid, result, contentFont, clientModel);
+    _drawFooter(page, pageSize, contentFont, userModel);
+    //Save and dispose the document.
+    final List<int> bytes = document.save();
+    document.dispose();
+    //Get external storage directory
+    Directory directory = await getExternalStorageDirectory();
+    //Get directory path
+    String path = directory.path;
+    //Create an empty file to write PDF data
+    File file = File('$path/budget.pdf');
+    //Write PDF data
+    await file.writeAsBytes(bytes, flush: true);
+    //Open the PDF document in mobile
+    OpenFile.open('$path/budget.pdf');
+  }
+
+  PdfGrid _getGrid(PdfFont contentFont, ClientModel clientModel, int columns, String rowOne, String rowTwo, String rowThree, String rowFour, int type, UserModel userModel) {
     //Create a PDF grid
     final PdfGrid grid = PdfGrid();
     //Secify the columns count to the grid.
-    grid.columns.add(count: 5);
+    grid.columns.add(count: columns);
     //Create the header row of the grid.
     final PdfGridRow headerRow = grid.headers.add(1)[0];
     //Set style
     headerRow.style.backgroundBrush = PdfSolidBrush(PdfColor(68, 114, 196));
     headerRow.style.textBrush = PdfBrushes.white;
-    headerRow.cells[0].value = 'Visita';
+    headerRow.cells[0].value = rowOne;
     headerRow.cells[0].stringFormat.alignment = PdfTextAlignment.center;
-    headerRow.cells[1].value = 'Empresa';
-    headerRow.cells[2].value = 'Responsável';
-    headerRow.cells[3].value = 'Telefone';
-    _addProducts(clientModel, grid);
+    headerRow.cells[1].value = rowTwo;
+    headerRow.cells[2].value = rowThree;
+    headerRow.cells[3].value = rowFour;
+    if(type == 0) {
+      _addProducts(clientModel, grid);
+    } else {
+      _addBudgetClientInfo(clientModel, grid, userModel);
+    }
     final PdfPen whitePen = PdfPen(PdfColor.empty, width: 0.5);
     PdfBorders borders = PdfBorders();
     borders.all = PdfPen(PdfColor(142, 179, 219), width: 0.5);
@@ -115,15 +159,25 @@ class PdfBloc extends BlocBase {
     row.cells[3].value = clientModel.phone;
   }
 
+  void _addBudgetClientInfo(ClientModel clientModel, PdfGrid grid, UserModel userModel) {
+    final PdfGridRow row = grid.rows.add();
+    DateTime now = DateTime.now();
+    String date = formattedDate(now);
+    row.cells[0].value = date;
+    row.cells[1].value = clientModel.budget;
+    row.cells[2].value = userModel.name;
+    row.cells[3].value = userModel.email;
+  }
+
   //Draws the invoice header
   PdfLayoutResult _drawHeader(PdfPage page, Size pageSize, PdfGrid grid,
-      PdfFont contentFont, PdfFont headerFont, PdfFont footerFont, ClientModel clientModel) {
+      PdfFont contentFont, PdfFont headerFont, PdfFont footerFont, ClientModel clientModel, String headLine) {
     //Draw rectangle
     page.graphics.drawRectangle(
         brush: PdfSolidBrush(PdfColor(91, 126, 215, 255)),
         bounds: Rect.fromLTWH(0, 0, pageSize.width - 115, 90));
     //Draw string
-    page.graphics.drawString('Info Cliente', headerFont,
+    page.graphics.drawString(headLine, headerFont,
         brush: PdfBrushes.white,
         bounds: Rect.fromLTWH(25, 0, pageSize.width - 115, 90),
         format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.middle));
@@ -149,7 +203,7 @@ class PdfBloc extends BlocBase {
         format.format(clientModel.nextVisit);
     final Size contentSize = contentFont.measureString(invoiceNumber);
     String address =
-        'Responsável: ${clientModel.name}, \r\n\r\nEndereço: \r\n\r\nBrasil, ${clientModel.addressModel.city}, ${clientModel.addressModel.unit}, \r\n\r\n ${clientModel.addressModel.place} - ${clientModel.number}, ${clientModel.addressModel.district}, \r\n\r\n${clientModel.addressModel.postalCode}';
+        'Cliente Responsável: ${clientModel.name}, \r\n\r\nEmpresa: ${clientModel.company}\r\n\r\nEndereço: \r\n\r\nBrasil, ${clientModel.addressModel.city}, ${clientModel.addressModel.unit}, \r\n\r\n ${clientModel.addressModel.place} - ${clientModel.number}, ${clientModel.addressModel.district}, \r\n\r\n${clientModel.addressModel.postalCode}';
     PdfTextElement(text: invoiceNumber, font: contentFont).draw(
         page: page,
         bounds: Rect.fromLTWH(pageSize.width - (contentSize.width + 30), 120,
@@ -192,7 +246,7 @@ class PdfBloc extends BlocBase {
     page.graphics.drawLine(linePen, Offset(0, pageSize.height - 100),
         Offset(pageSize.width, pageSize.height - 100));
     String footerContent =
-        'Funcionário Responsável: ${userModel.name}.\r\n\r\nContato: ${userModel.email}\r\n\r\nAny Questions? andurilsoftware@gmail.com';
+        'Funcionário Responsável: ${userModel.name}.\r\n\r\nContato: ${userModel.email}\r\n\r\nAlguma dúvida sobre nosso Software? andurilsoftware@gmail.com';
     //Added 30 as a margin for the layout
     page.graphics.drawString(footerContent, contentFont,
         format: PdfStringFormat(alignment: PdfTextAlignment.right),
