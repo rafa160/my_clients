@@ -1,4 +1,6 @@
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -194,6 +196,42 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                 CustomAnimatedContainer(
                   milliseconds: 1000,
                   horizontalOffset: -50,
+                  position: 8,
+                  widget:Text(
+                    'Telefone',
+                    style: titleForms,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                CustomAnimatedContainer(
+                  milliseconds: 1000,
+                  horizontalOffset: -50,
+                  position: 9,
+                  widget: CustomFormField(
+                    text: 'phone',
+                    initialValue: widget.clientModel.whatsApp,
+                    enabled: true,
+                    input: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter(),
+                    ],
+                    action: TextInputAction.next,
+                    type: TextInputType.number,
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(context),
+                    ]),
+                    obscureText: false,
+                    maxLines: 1,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CustomAnimatedContainer(
+                  milliseconds: 1000,
+                  horizontalOffset: -50,
                   position: 11,
                   widget:Text(
                     'Observações',
@@ -281,7 +319,8 @@ class _ClientDetailsScreenState extends State<ClientDetailsScreen> {
                                             email: _formKey.currentState.value['email'],
                                             id: widget.clientModel.id,
                                             budget: _formKey.currentState.value['budget'],
-                                            observations: _formKey.currentState.value['observations']
+                                            observations: _formKey.currentState.value['observations'],
+                                            phone: _formKey.currentState.value['phone']
                                         );
                                       }
                                       Get.back();

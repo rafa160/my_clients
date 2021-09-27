@@ -239,7 +239,7 @@ class ClientBloc extends BlocBase {
   ///
 
 
-  Future<void> updateClientsInfoById({BuildContext context, String id, String name, String company, String email, String observations, String budget}) async {
+  Future<void> updateClientsInfoById({BuildContext context, String id, String name, String company, String email, String observations, String budget, String phone}) async {
     _streamController.add(true);
     try {
       Map<String, dynamic> data = {
@@ -247,7 +247,8 @@ class ClientBloc extends BlocBase {
         "company": company,
         "email": email,
         "observations": observations,
-        "budget": budget
+        "budget": budget,
+        "phone": phone
       };
       _fireStore.collection('clients').doc(id).update(data);
       _streamController.add(false);
