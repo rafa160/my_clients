@@ -114,7 +114,7 @@ class ClientBloc extends BlocBase {
    ///  When u finish this action the status will change for 1(client).
    ///
 
-  Future<void> updateClientStatus({String companyKey, String observation, DateTime dateTime, BuildContext context, String id}) async {
+  Future<void> updateClientStatus({String companyKey, String observation, DateTime dateTime, BuildContext context, String id, String budget}) async {
     _streamController.add(true);
     try {
       Map<String, dynamic> clientData = {
@@ -123,7 +123,8 @@ class ClientBloc extends BlocBase {
         "next_visit": dateTime,
         "company_key": companyKey,
         "day": dateTime.day,
-        "month":dateTime.month
+        "month":dateTime.month,
+        "budget": budget
       };
       await _fireStore.collection('clients').doc(id).update(clientData);
       _streamController.add(false);
@@ -230,6 +231,33 @@ class ClientBloc extends BlocBase {
         .get();
     monthVisitsClientsList = snapshot.docs.map((e) => ClientModel.fromDocument(e)).toList();
     return monthVisitsClientsList;
+  }
+
+
+  ///
+  /// here you will make updates for clientes already created, useing theirs Id
+  ///
+
+
+  Future<void> updateClientsInfoById({BuildContext context, String id, String name, String company, String email, String observations, String budget}) async {
+    _streamController.add(true);
+    try {
+      Map<String, dynamic> data = {
+        "name": name,
+        "company": company,
+        "email": email,
+        "observations": observations,
+        "budget": budget
+      };
+      _fireStore.collection('clients').doc(id).update(data);
+      _streamController.add(false);
+      Get.offAll(() => MainModule());
+      ToastUtilsSuccess.showCustomToast(context, 'Cliente Atualizado.');
+    } catch (e) {
+      _streamController.add(false);
+      ToastUtilsFail.showCustomToast(context, 'erro ao atualizar cliente');
+    }
+
   }
 
   @override

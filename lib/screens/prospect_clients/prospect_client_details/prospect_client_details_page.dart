@@ -274,7 +274,37 @@ class _ProspectClientDetailsScreenState extends State<ProspectClientDetailsScree
                     ]),
                     maxLength: 300,
                     obscureText: false,
-                    maxLines: 8,
+                    maxLines: 4,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CustomAnimatedContainer(
+                  milliseconds: 1200,
+                  horizontalOffset: 50,
+                  position: 8,
+                  widget: Text(
+                    'Orçamento',
+                    style: titleForms,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                CustomAnimatedContainer(
+                  milliseconds: 1200,
+                  horizontalOffset: 50,
+                  position: 10,
+                  widget:CustomFormField(
+                    text: 'budget',
+                    initialValue: '',
+                    enabled: true,
+                    action: TextInputAction.next,
+                    type: TextInputType.text,
+                    maxLength: 300,
+                    obscureText: false,
+                    maxLines: 4,
                   ),
                 ),
                 SizedBox(
@@ -298,7 +328,8 @@ class _ProspectClientDetailsScreenState extends State<ProspectClientDetailsScree
                                 dateTime: _formKey.currentState.value['next_visit'],
                                 observation: _formKey.currentState.value['observations'],
                                 companyKey: _formKey.currentState.value['company_key'],
-                                id: widget.clientModel.id
+                                id: widget.clientModel.id,
+                                budget: _formKey.currentState.value['budget']
                               );
                             }
                           },
