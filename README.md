@@ -11,9 +11,10 @@ Using a Modular Archt and bloc pattern as state management.
   - dio
  
 runs flutter build apk to gets an test apk.
+If you wanna build an appbundle you must coment the build.gradle realise part.
 
 it runs on androids and ios.
- - tested andoid 10, 11.
+ - tested andoid 10, 11.Z
 
 step by step
 - Create an account.
